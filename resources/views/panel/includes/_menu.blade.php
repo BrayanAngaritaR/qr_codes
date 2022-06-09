@@ -15,7 +15,7 @@
          </a>
       </li>
       <li>
-         <a href="#" class="nav_link">
+         <a href="{{ route('panel.qr.index')  }}" class="nav_link">
             <ion-icon name="qr-code-outline" class="nav_icon"></ion-icon>
             <span class="nav_name">Mis QR</span>
          </a>

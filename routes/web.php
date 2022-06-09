@@ -22,3 +22,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
+
+Route::get('/dashboard/qr', [App\Http\Controllers\Panel\QrController::class, 'index'])->name('panel.qr.index');
+Route::get('/dashboard/qr/create', [App\Http\Controllers\Panel\QrController::class, 'create'])->name('panel.qr.create');
+Route::post('/dashboard/qr/create', [App\Http\Controllers\Panel\QrController::class, 'store'])->name('panel.qr.store');
