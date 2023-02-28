@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Panel;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User\Qr;
-use Illuminate\Support\Facades\Storage;
 use Str;
 use Auth;
+use App\Models\User\Qr;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class QrController extends Controller
 {
@@ -41,11 +42,11 @@ class QrController extends Controller
       ];
 
       $this->validate($request, $rules, $customMessages);
-      
+
       //Obtener el último QR creado
       $id = Qr::latest()->first();
 
-      if($id){
+      if ($id) {
          $id = $id->id + 1;
       } else {
          $id = 1;
@@ -55,25 +56,25 @@ class QrController extends Controller
       $str = Str::random(4);
       $code = $id . $str;
       //$slug = 'https://qr.bepro.digital/code/' . $code; 
-      $slug = 'http://qr.test/code/' . $code; 
+      $slug = env('APP_URL') . $code;
 
       //Asignar el nombre a la imagen (QR)
-      $imageName = 'img-'.$code.'.svg';
+      $imageName = 'img-' . $code . '.svg';
 
       //Generar la imagen
       $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->generate($slug);
-      
+
       //Guardar la imagen
-      Storage::disk('public')->put('images/' . $imageName, $image);
       $path = 'images/' . $imageName;
+      Storage::disk('public')->put($path, $image);
 
       //Especificar/Obtener el tipo de QR a generar 
-      switch($request->qrType){
-         case('email'):
+      switch ($request->qrType) {
+         case ('email'):
             dd("Es un email, agregar nuevos campos");
             break;
          default:
-         $content = $request->content;
+            $content = $request->content;
       }
 
       //Guardar el registro en la base de datos
@@ -85,30 +86,29 @@ class QrController extends Controller
          'type' => $request->qrType,
          'user_id' => Auth::id(),
       ]);
-      
-      //Informar al usuario que se ha creado el QR
-      return "Se ha creado el código QR";
 
-      //Mejorar las alertas
+      //Informar al usuario que se ha creado el QR
+      Session::flash('info', ['success', 'Se ha creado el código QR']);
+      return back();
    }
 
    public function show($id)
    {
-   //
+      //
    }
 
    public function edit($id)
    {
-   //
+      //
    }
 
    public function update(Request $request, $id)
    {
-   //
+      //
    }
 
    public function destroy($id)
    {
-   //
+      //
    }
 }
