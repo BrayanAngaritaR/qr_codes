@@ -61,21 +61,40 @@ class QrController extends Controller
       //Asignar el nombre a la imagen (QR)
       $imageName = 'img-' . $code . '.svg';
 
-      //Generar la imagen
-      $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->generate($slug);
+      //Especificar/Obtener el tipo de QR a generar 
+      switch ($request->qrType) {
+         case ('email'):
+            //Crear las reglas de validación
+            $rules = [
+               'content' => 'required|email',
+               'subject' => 'required|min:4|max:50',
+               'message' => 'required|min:5|max:300'
+            ];
+
+            //Validar que sí se esté pasando información
+            $customMessages = [
+               'required' => 'Este campo es requerido.',
+               'email' => 'Este campo debe ser un correo electrónico válido',
+               'subject.min' => 'Este campo requiere mínimo 4 caracteres',
+               'subject.max' => 'Este campo requiere máximo 50 caracteres',
+               'message.min' => 'Este campo requiere mínimo 5 caracteres',
+               'message.max' => 'Este campo requiere máximo 300 caracteres'
+            ];
+
+            $this->validate($request, $rules, $customMessages);
+
+            //email, subject, message
+            $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->email($request->content, $request->subject, $request->message);
+            break;
+         default:
+            $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->generate($slug);
+      }
+
+      $content = $request->content;
 
       //Guardar la imagen
       $path = 'images/' . $imageName;
       Storage::disk('public')->put($path, $image);
-
-      //Especificar/Obtener el tipo de QR a generar 
-      switch ($request->qrType) {
-         case ('email'):
-            dd("Es un email, agregar nuevos campos");
-            break;
-         default:
-            $content = $request->content;
-      }
 
       //Guardar el registro en la base de datos
       $qr_code = Qr::create([
