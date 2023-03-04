@@ -55,7 +55,6 @@ class QrController extends Controller
       //Asignar una URL y un código de manera aleatoria
       $str = Str::random(4);
       $code = $id . $str;
-      //$slug = 'https://qr.bepro.digital/code/' . $code; 
       $slug = env('APP_URL') . $code;
 
       //Asignar el nombre a la imagen (QR)
@@ -75,10 +74,10 @@ class QrController extends Controller
             $customMessages = [
                'required' => 'Este campo es requerido.',
                'email' => 'Este campo debe ser un correo electrónico válido',
-               'subject.min' => 'Este campo requiere mínimo 4 caracteres',
-               'subject.max' => 'Este campo requiere máximo 50 caracteres',
-               'message.min' => 'Este campo requiere mínimo 5 caracteres',
-               'message.max' => 'Este campo requiere máximo 300 caracteres'
+               'subject.min' => 'Este campo requiere mínimo :min caracteres',
+               'subject.max' => 'Este campo requiere máximo :max caracteres',
+               'message.min' => 'Este campo requiere mínimo :min caracteres',
+               'message.max' => 'Este campo requiere máximo :max caracteres'
             ];
 
             $this->validate($request, $rules, $customMessages);
@@ -111,23 +110,39 @@ class QrController extends Controller
       return back();
    }
 
-   public function show($id)
+   public function edit(Qr $code)
    {
-      //
+      return view('panel.qr.edit', compact('code'));
    }
 
-   public function edit($id)
+   public function update(Request $request, Qr $code)
    {
-      //
+      $code->update([
+         'redirect_to' => $request->content,
+         'type' => $request->qrType,
+      ]);
+
+      //Informar al usuario que se ha actualizado el QR
+      Session::flash('info', ['success', 'Se ha actualizado el código QR']);
+      return back();
    }
 
-   public function update(Request $request, $id)
+   public function destroy(Qr $code)
    {
-      //
-   }
+      if (Storage::disk('public')->exists($code->path)) {
+         //Eliminar el archivo físicamente
+         Storage::disk('public')->delete($code->path);
 
-   public function destroy($id)
-   {
-      //
+         //Eliminar el registro en la base de datos
+         $code->delete();
+
+         //Informar al usuario que se ha eliminado el QR
+         Session::flash('info', ['info', 'Se ha eliminado el código QR']);
+         return back();
+      } else {
+         //Informar al usuario que no se ha encontrado el código el QR
+         Session::flash('info', ['error', 'No se ha encontrado el código QR']);
+         return back();
+      }
    }
 }
