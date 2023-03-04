@@ -9,7 +9,7 @@
    </div>
    <ul>
       <li>
-         <a href="#" class="nav_link active">
+         <a href="{{ route('dashboard') }}" class="nav_link active">
             <ion-icon name="home-outline" class="nav_icon"></ion-icon>
             <span class="nav_name">Panel</span>
          </a>
@@ -27,8 +27,16 @@
          </a>
       </li>
    </ul>
-   <a href="#" class="nav_link">
+   <a 
+      href="{{ route('logout') }}" 
+      onclick="event.preventDefault(); 
+      document.getElementById('logout-form').submit();" 
+      class="nav_link">
       <ion-icon name="log-out-outline" class="nav_icon"></ion-icon>
       <span class="nav_name">Salir</span>
    </a>
+
+   <form id="logout-form" method="POST" action="{{ route('logout') }}" class="d-none">
+   @csrf
+   </form>
 </nav>

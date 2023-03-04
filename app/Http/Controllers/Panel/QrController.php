@@ -112,7 +112,16 @@ class QrController extends Controller
 
    public function edit(Qr $code)
    {
-      return view('panel.qr.edit', compact('code'));
+      if($code->type === 'email'){
+         Session::flash('info', ['error', 'No puedes editar códigos QR que contengan correos electrónicos']);
+         return redirect()->route('panel.qr.index');
+      }
+
+      if($code->user_id === Auth::id()){
+         return view('panel.qr.edit', compact('code'));
+      }
+      Session::flash('info', ['error', 'No puedes editar este código QR']);
+      return redirect()->route('panel.qr.index');
    }
 
    public function update(Request $request, Qr $code)
@@ -129,20 +138,26 @@ class QrController extends Controller
 
    public function destroy(Qr $code)
    {
-      if (Storage::disk('public')->exists($code->path)) {
-         //Eliminar el archivo físicamente
-         Storage::disk('public')->delete($code->path);
+      if($code->user_id === Auth::id()){
+         if (Storage::disk('public')->exists($code->path)) {
+            //Eliminar el archivo físicamente
+            Storage::disk('public')->delete($code->path);
 
-         //Eliminar el registro en la base de datos
-         $code->delete();
+            //Eliminar el registro en la base de datos
+            $code->delete();
 
-         //Informar al usuario que se ha eliminado el QR
-         Session::flash('info', ['info', 'Se ha eliminado el código QR']);
-         return back();
-      } else {
-         //Informar al usuario que no se ha encontrado el código el QR
-         Session::flash('info', ['error', 'No se ha encontrado el código QR']);
-         return back();
+            //Informar al usuario que se ha eliminado el QR
+            Session::flash('info', ['info', 'Se ha eliminado el código QR']);
+            return back();
+         } else {
+            //Informar al usuario que no se ha encontrado el código el QR
+            Session::flash('info', ['error', 'No se ha encontrado el código QR']);
+            return back();
+         }
       }
+
+      //Informar al usuario que no puede eliminar el QR
+      Session::flash('info', ['error', 'No puedes eliminar este código QR']);
+      return redirect()->route('panel.qr.index');
    }
 }

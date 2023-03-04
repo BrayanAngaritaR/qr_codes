@@ -11,7 +11,7 @@
                     <th scope="col">#</th>
                     <th scope="col">QR</th>
                     <th scope="col">Tipo</th>
-                    <th scope="col">Acciones</th>
+                    <th scope="col" class="text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,15 +23,17 @@
                         </td>
                         <td>{{ $code->type }}</td>
                         <td>
-                            <a href="{{ route('user.qr.show', $code) }}">Ver</a>
-                            <a href="{{ route('panel.qr.edit', $code) }}">Editar</a>
-                            <form action="{{ route('panel.qr.destroy', $code) }}" method="POST">
-                                @method('DELETE')
-                                @csrf
-                                <button class="btn btn-link">
-                                    Eliminar
-                                </button>
-                            </form>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <a class="mx-2" href="{{ route('user.qr.show', $code) }}">Ver</a>
+                                <a class="mx-2" href="{{ route('panel.qr.edit', $code) }}">Editar</a>
+                                <form action="{{ route('panel.qr.destroy', $code) }}" method="POST" class="mx-2">
+                                    @method('DELETE')
+                                    @csrf
+                                    <button class="btn btn-danger">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
