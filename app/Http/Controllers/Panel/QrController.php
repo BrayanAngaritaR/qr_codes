@@ -62,6 +62,12 @@ class QrController extends Controller
 
       //Especificar/Obtener el tipo de QR a generar 
       switch ($request->qrType) {
+         case ('phone'):
+            $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->phoneNumber($request->content);
+            break;
+         case ('sms'):
+            $image = QrCode::margin(2)->format('svg')->size(500)->errorCorrection('H')->SMS($request->content);
+            break;
          case ('email'):
             //Crear las reglas de validación
             $rules = [
@@ -112,12 +118,12 @@ class QrController extends Controller
 
    public function edit(Qr $code)
    {
-      if($code->type === 'email'){
+      if ($code->type === 'email') {
          Session::flash('info', ['error', 'No puedes editar códigos QR que contengan correos electrónicos']);
          return redirect()->route('panel.qr.index');
       }
 
-      if($code->user_id === Auth::id()){
+      if ($code->user_id === Auth::id()) {
          return view('panel.qr.edit', compact('code'));
       }
       Session::flash('info', ['error', 'No puedes editar este código QR']);
@@ -138,7 +144,7 @@ class QrController extends Controller
 
    public function destroy(Qr $code)
    {
-      if($code->user_id === Auth::id()){
+      if ($code->user_id === Auth::id()) {
          if (Storage::disk('public')->exists($code->path)) {
             //Eliminar el archivo físicamente
             Storage::disk('public')->delete($code->path);

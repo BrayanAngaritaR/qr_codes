@@ -18,6 +18,16 @@
                     value="email">
                 <label class="form-check-label" for="emailItem">Correo electrónico</label>
             </div>
+            <div class="form-check form-check-inline">
+                <input @checked(old('qrType') === 'phone') class="form-check-input" type="radio" name="qrType" id="phoneItem"
+                    value="phone">
+                <label class="form-check-label" for="phoneItem">Teléfono</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input @checked(old('qrType') === 'sms') class="form-check-input" type="radio" name="qrType" id="smsItem"
+                    value="sms">
+                <label class="form-check-label" for="smsItem">SMS</label>
+            </div>
 
             <div class="mb-3 mt-4">
                 <label for="contentItem" id="labelContentItem" class="form-label">Contenido</label>
@@ -80,6 +90,20 @@
                     $('#labelContentItem').text("Correo electrónico de destino");
                     $('#emailHelp').text(
                         "Ingresa el correo electrónico al que quieres que llegue el mensaje. Ej: info@bepro.digital"
+                    );
+                    break;
+                case 'phone':
+                    $("#emailContent").addClass('d-none');
+                    $('#labelContentItem').text("Ingresa tu número de contacto");
+                    $('#emailHelp').text(
+                        "Ingresa tu número de contacto: Ej: 3218057515"
+                    );
+                    break;
+                case 'sms':
+                    $("#emailContent").addClass('d-none');
+                    $('#labelContentItem').text("Ingresa el número celular de destino");
+                    $('#emailHelp').text(
+                        "Ingresa el número al cual quieres que llegue el SMS"
                     );
                     break;
                 default:
