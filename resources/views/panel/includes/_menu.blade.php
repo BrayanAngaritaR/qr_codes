@@ -9,19 +9,20 @@
     </div>
     <ul>
         <li>
-            <a href="{{ route('dashboard') }}" class="nav_link active">
+            <a href="{{ route('dashboard') }}" class="nav_link {{ Route::is('dashboard') ? 'active' : '' }}">
                 <ion-icon name="home-outline" class="nav_icon"></ion-icon>
                 <span class="nav_name">Panel</span>
             </a>
         </li>
         <li>
-            <a href="{{ route('panel.qr.index') }}" class="nav_link">
+            <a href="{{ route('panel.qr.index') }}" class="nav_link {{ Route::is('panel.qr.index') ? 'active' : '' }}">
                 <ion-icon name="qr-code-outline" class="nav_icon"></ion-icon>
                 <span class="nav_name">Mis QR</span>
             </a>
         </li>
         <li>
-            <a href="#" class="nav_link">
+            <a href="{{ route('panel.settings.index') }}"
+                class="nav_link {{ Route::is('panel.settings.index') ? 'active' : '' }}">
                 <ion-icon name="settings-outline" class="nav_icon"></ion-icon>
                 <span class="nav_name">Configuración</span>
             </a>

@@ -439,6 +439,8 @@
                 <p>Scan me to return to the original page.</p>
             </div>
 
+            <img width="400" src="{{ asset(env('APP_LOGO')) }}" alt="{{ asset(env('APP_LOGO')) }}">
+
             <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
                 <div class="grid grid-cols-1 md:grid-cols-2">
                     <div class="p-6">

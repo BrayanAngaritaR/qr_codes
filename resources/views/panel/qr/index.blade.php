@@ -2,7 +2,7 @@
 @section('content')
     <p>Lista de códigos QR</p>
 
-    <a href="{{ route('panel.qr.create') }}" class="btn btn-primary">Agregar QR</a>
+    <a href="{{ route('panel.qr.create') }}" class="btn btn-primary mb-4">Agregar QR</a>
 
     <div class="table-responsive">
         <table class="table">
@@ -16,7 +16,7 @@
             </thead>
             <tbody>
                 @forelse($qr_codes as $code)
-                    <tr>
+                    <tr class="align-middle">
                         <th scope="row">{{ $code->id }}</th>
                         <td>
                             <img src="{{ asset('storage/' . $code->path) }}" width="100" alt="">
@@ -29,7 +29,7 @@
                                 <form action="{{ route('panel.qr.destroy', $code) }}" method="POST" class="mx-2">
                                     @method('DELETE')
                                     @csrf
-                                    <button class="btn btn-danger">
+                                    <button class="btn btn-danger mt-3">
                                         Eliminar
                                     </button>
                                 </form>
